@@ -1,3 +1,5 @@
+using DogGo.Repositories;
+
 namespace DogGo
 {
     public class Program
@@ -8,6 +10,7 @@ namespace DogGo
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddTransient<IWalkerRepository, WalkerRepository>();
 
             var app = builder.Build();
 
