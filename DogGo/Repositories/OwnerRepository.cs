@@ -113,6 +113,55 @@ namespace DogGo.Repositories
                 }
             }
         }
+
+        public Owner GetOwnerByEmail(string email)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT o.Id, o.Email, o.[Name], o.[Address], o.NeighborhoodId, n.Name AS 'NeighborhoodName', o.Phone
+                        FROM Owner o
+                        JOIN Neighborhood n
+                        ON n.Id = o.NeighborhoodId
+                        WHERE o.Email = @email
+                    ";
+
+                    cmd.Parameters.AddWithValue("@email", email);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        Owner owner = new Owner
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Email = reader.GetString(reader.GetOrdinal("Email")),
+                            Name = reader.GetString(reader.GetOrdinal("Name")),
+                            Address = reader.GetString(reader.GetOrdinal("Address")),
+                            NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId")),
+                            Neighborhood = new Neighborhood
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("NeighborhoodId")),
+                                Name = reader.GetString(reader.GetOrdinal("NeighborhoodName"))
+                            },
+                            Phone = reader.GetString(reader.GetOrdinal("Phone"))
+                        };
+
+                        reader.Close();
+                        return owner;
+                    }
+                    else
+                    {
+                        reader.Close();
+                        return null;
+                    }
+                }
+            }
+        }
+
         public void AddOwner(Owner owner)
         {
             using (SqlConnection conn = Connection)
