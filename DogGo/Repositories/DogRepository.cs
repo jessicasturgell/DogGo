@@ -197,8 +197,10 @@ namespace DogGo.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                SELECT Id, Name, Breed, OwnerId, Notes, ImageUrl
-                FROM Dog
+                SELECT d.Id, d.[Name], d.OwnerId, o.[Name] AS 'OwnerName', d.Breed, d.Notes, d.ImageUrl
+                FROM Dog d
+                JOIN Owner o
+                ON o.Id = d.OwnerId
                 WHERE OwnerId = @ownerId
             ";
 
@@ -215,18 +217,16 @@ namespace DogGo.Repositories
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Name = reader.GetString(reader.GetOrdinal("Name")),
                             Breed = reader.GetString(reader.GetOrdinal("Breed")),
-                            OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId"))
+                            OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId")),
+                            Owner = new Owner
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("OwnerId")),
+                                Name = reader.GetString(reader.GetOrdinal("OwnerName"))
+                            },
+                            //Check if optional columns are null
+                            Notes = reader.IsDBNull(reader.GetOrdinal("Notes")) ? null : reader.GetString(reader.GetOrdinal("Notes")),
+                            ImageUrl = reader.IsDBNull(reader.GetOrdinal("ImageUrl")) ? null : reader.GetString(reader.GetOrdinal("ImageUrl"))
                         };
-
-                        //Check if optional columns are null
-                        if (reader.IsDBNull(reader.GetOrdinal("Notes")) == false)
-                        {
-                            dog.Notes = reader.GetString(reader.GetOrdinal("Notes"));
-                        }
-                        if (reader.IsDBNull(reader.GetOrdinal("ImageUrl")) == false)
-                        {
-                            dog.ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl"));
-                        }
 
                         dogs.Add(dog);
                     }
