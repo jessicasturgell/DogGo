@@ -27,24 +27,26 @@
     <section class="col-8 container mt-5">
       <h1 class="text-left">Recent Walks</h1>
 
-       <table style="width: 90%">
-           <tr>
-               <th style="width: 30%; color: gray">Date</th>
-                    <th style="width: 30%; color: gray">Client</th>
-                    <th style="width: 30%; color: gray">Duration</th>
-           </tr>
-        @foreach (Walks walk in Model.Walks) {
-        <tr style="border-bottom: 1px solid gray">
-                        <td style="width: 30%">@walk.Date</td>
-                        <td style="width: 30%">@walk.Dog.Name</td>
-                        <td style="width: 30%">@walk.Duration</td>
-        </tr>
-        }
-       </table>
+        <table style="width: 90%">
+            <tr>
+                <th style="width: 30%; color: gray">Date</th>
+                <th style="width: 30%; color: gray">Client</th>
+                <th style="width: 30%; color: gray">Duration</th>
+            </tr>
+            @for (int i = 0; i < Model.Walks.Count; i++)
+            {
+                var walk = Model.Walks[i];
+                <tr style="border-bottom: 1px solid gray">
+                    <td style="width: 30%">@walk.Date.ToString("MM/dd/yyyy")</td>
+                    <td style="width: 30%">@walk.Dog.Name</td>
+                    <td style="width: 30%">@Model.FormattedWalkDurations[i]</td>
+                </tr>
+            }
+        </table>
     </section>
 
     <section class="col-lg-4 col-md-8 container mt-5">
-            <h2 style="color: gray">Total Walk Time: <span style="color: black">@Model.TotalWalkDuration minutes</span</h2>
+            <h2 style="color: gray">Total Walk Time: <span style="color: black">@Model.FormattedTotalWalkDuration</span</h2>
     </section>
   </div>
 </div>

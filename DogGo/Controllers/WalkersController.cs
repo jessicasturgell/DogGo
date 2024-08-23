@@ -60,7 +60,6 @@ namespace DogGo.Controllers
             {
                 Walker = walker,
                 Walks = walks
-
             };
 
             return View(vm);

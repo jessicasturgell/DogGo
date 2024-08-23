@@ -59,7 +59,6 @@ namespace DogGo.Repositories
                                 Name = reader.GetString(reader.GetOrdinal("DogName")),
                             }
                         };
-
                         walks.Add(walk);
                     }
 
