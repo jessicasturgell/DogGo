@@ -7,13 +7,6 @@ namespace DogGo.Models.ViewModels
     {
         public Walker Walker { get; set; }
         public List<Walks> Walks { get; set; }
-        public List<string> FormattedWalkDurations
-        {
-            get
-            {
-                return Walks?.Select(w => TimeSpan.FromMinutes(w.Duration).ToString(@"hh\:mm\:ss")).ToList();
-            }
-        }
         public int TotalWalkDuration
         {
             get
@@ -25,8 +18,9 @@ namespace DogGo.Models.ViewModels
         {
             get
             {
-                TimeSpan totalDuration = TimeSpan.FromMinutes(TotalWalkDuration);
-                return totalDuration.ToString(@"hh\:mm\:ss");
+                int hours = TotalWalkDuration / 60;
+                int minutes = TotalWalkDuration % 60;
+                return $"{hours}hrs {minutes}mins";
             }
         }
     }
